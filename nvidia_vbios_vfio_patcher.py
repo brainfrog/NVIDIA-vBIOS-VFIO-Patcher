@@ -15,19 +15,6 @@ except NameError:
     raw_input = input
 
 
-PROMPT_TEXT = "I agree to be careful"
-
-WARNING_TEXT = """
-USE THIS SOFTWARE AT YOUR OWN DISCRETION. THIS SOFTWARE HAS *NOT* BEEN
-EXTENSIVELY TESTED AND MAY NOT WORK WITH YOUR GRAPHICS CARD.
-
-If you want to save the created vBIOS file, type the following phrase
-EXACTLY as it is written below:
-
-%s
-""" % PROMPT_TEXT
-
-
 class CheckException(Exception):
     pass
 
@@ -156,14 +143,6 @@ def main():
         "--disable-footer-strip", default=False, action="store_true",
         help="Don't strip the footer from the vBIOS (Allows you to convert older gen GPUs)"
     )
-    parser.add_argument(
-        "--skip-the-very-important-warning",
-        default=False, action="store_true",
-        help=(
-            "Skip the very important warning and save the ROM without asking "
-            "for any input."
-        )
-    )
 
     args = parser.parse_args()
 
@@ -181,15 +160,6 @@ def main():
         rom.run_sanity_tests(args.ignore_sanity_check)
 
     spliced_rom = rom.get_spliced_rom(args.disable_footer_strip)
-
-    if not args.skip_the_very_important_warning:
-        print(WARNING_TEXT)
-        print("Type here: ", end="")
-        answer = raw_input()
-
-        if answer != PROMPT_TEXT:
-            print("Wrong answer, halting...")
-            sys.exit(1)
 
     print("Writing the edited ROM...")
 
